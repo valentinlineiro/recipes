@@ -1,0 +1,23 @@
+<div class="search-bar">
+  <div class="search-input-wrapper">
+    <input
+      type="text"
+      placeholder="Search recipes..."
+      [value]="searchQuery()"
+      (input)="onSearchInput($any($event.target).value)"
+      class="search-input"
+    />
+  </div>
+  <div class="category-select-wrapper">
+    <select
+      [value]="selectedCategory()"
+      (change)="onCategoryChange($any($event.target).value)"
+      class="category-select"
+    >
+      <option value="">All Categories</option>
+      @for (category of categories(); track category) {
+        <option [value]="category">{{ category | titlecase }}</option>
+      }
+    </select>
+  </div>
+</div>
