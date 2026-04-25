@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "routing": {
+    "think":  { "cli": "claude", "model": "claude-sonnet-4-6" },
+    "do":     { "cli": "claude", "model": "claude-sonnet-4-6" },
+    "retro":  { "cli": "claude", "model": "claude-sonnet-4-6" }
+  },
+  "cliCommands": {
+    "claude":  "claude",
+    "gemini":  "gemini",
+    "opencode": "opencode -p"
+  },
+  "pricing": {
+    "claude-sonnet-4-6": { "input": 3.00, "output": 15.00 },
+    "gemini-2.5-pro":    { "input": 1.25, "output": 10.00 }
+  },
+  "budget": {
+    "daily":   5.00,
+    "monthly": 30.00,
+    "alertAt": 0.80
+  }
+}
