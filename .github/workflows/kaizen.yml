@@ -1,0 +1,57 @@
+name: Autonomous kaizen
+
+on:
+  schedule:
+    - cron: '0 8 * * 5'    # every Friday at 8am UTC
+  workflow_dispatch:         # manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  kaizen:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate current recipes JSON
+        run: python3 scripts/export.py
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install OpenCode
+        run: npm install -g opencode-ai@latest
+
+      - name: Run kaizen agent
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          CURRENT_MONTH: $(date +%B)
+        run: |
+          CURRENT_MONTH=$(date +%B)
+          sed -i "s/{{CURRENT_MONTH}}/$CURRENT_MONTH/g" docs/agents/KAIZEN.md
+
+          opencode run \
+            --model opencode/minimax-m2.5-free \
+            --dangerously-skip-permissions \
+            "Read docs/agents/KAIZEN.md completely. Then read docs/DONE.md, src/assets/data/recipes.json, and docs/BACKLOG.md. Execute the kaizen protocol exactly as defined in KAIZEN.md and write your output to docs/KAIZEN-PROPOSALS.md."
+
+      - name: Commit proposals
+        run: |
+          git config user.name  "kaizen-bot"
+          git config user.email "kaizen-bot@users.noreply.github.com"
+          git add docs/KAIZEN-PROPOSALS.md
+          git diff --staged --quiet || \
+            git commit -m "chore: kaizen proposals $(date +%Y-%m-%d)"
+          git push

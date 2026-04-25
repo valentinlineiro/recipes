@@ -1,0 +1,80 @@
+name: "🍳 Nueva receta"
+description: "Añade una receta a la colección"
+title: "[recipe] "
+labels: ["recipe"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Nombre de la receta
+      placeholder: "Tortilla de patatas"
+    validations:
+      required: true
+
+  - type: input
+    id: category
+    attributes:
+      label: Categoría
+      description: "breakfast / lunch / dinner / dessert / snack"
+      placeholder: "lunch"
+    validations:
+      required: true
+
+  - type: input
+    id: time
+    attributes:
+      label: Tiempo (minutos)
+      placeholder: "45"
+    validations:
+      required: true
+
+  - type: input
+    id: servings
+    attributes:
+      label: Raciones
+      placeholder: "4"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descripción
+      placeholder: "Clásica tortilla española con cebolla..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: ingredients
+    attributes:
+      label: Ingredientes
+      description: "Un ingrediente por línea: cantidad unidad nombre"
+      placeholder: |
+        4 unidades huevo
+        500 g patata
+        1 unidades cebolla
+        100 ml aceite de oliva
+        1 tsp sal
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos
+      description: "Un paso por línea, en orden"
+      placeholder: |
+        Pela y corta las patatas en rodajas finas
+        Fríe las patatas en aceite a fuego medio durante 20 minutos
+        Bate los huevos con sal y mezcla con las patatas
+        Cuaja la tortilla 3 minutos por cada lado
+    validations:
+      required: true
+
+  - type: input
+    id: image_url
+    attributes:
+      label: Imagen (URL, opcional)
+      placeholder: "https://..."
+    validations:
+      required: false

@@ -1,0 +1,61 @@
+name: Autonomous agent
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-4'   # Mon-Thu 8am UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install OpenCode
+        run: npm install -g opencode-ai@latest
+
+      - name: Install project deps
+        run: npm ci
+
+      - name: Run ARCH agent
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        run: |
+          opencode run \
+            --model opencode/minimax-m2.5-free \
+            --dangerously-skip-permissions \
+            "Read docs/agents/THINK.md, docs/SPRINT.md, docs/BACKLOG.md, docs/DONE.md. Then read docs/agents/DO.md and execute every READY task in priority order following the ARCH protocol exactly. Run ng build to verify before marking REVIEW."
+
+      - name: Commit agent work
+        run: |
+          git config user.name  "arch-agent"
+          git config user.email "arch-agent@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || \
+            git commit -m "chore: agent session $(date +%Y-%m-%d)"
+          git push
+
+      - name: Deploy if build artifacts exist
+        if: ${{ hashFiles('dist/**') != '' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/recipes/browser
+          branch: gh-pages
+          clean: true
