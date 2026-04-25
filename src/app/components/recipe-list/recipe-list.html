@@ -1,0 +1,31 @@
+@if (isLoading()) {
+  <div class="loading">
+    <p>Loading recipes...</p>
+  </div>
+} @else if (hasError()) {
+  <div class="error">
+    <p>Failed to load recipes. Please try again.</p>
+  </div>
+} @else if (recipes().length === 0) {
+  <div class="empty-state">
+    <p>No recipes found.</p>
+  </div>
+} @else {
+  <div class="recipe-grid">
+    @for (recipe of recipes(); track recipe.id) {
+      <a class="recipe-card" [routerLink]="['/recipes', recipe.id]">
+        <div class="card-image">
+          <span class="category-badge">{{ recipe.category }}</span>
+        </div>
+        <div class="card-content">
+          <h3>{{ recipe.title }}</h3>
+          <p class="description">{{ recipe.description }}</p>
+          <div class="meta">
+            <span class="time">{{ recipe.time_minutes }} min</span>
+            <span class="servings">{{ recipe.servings }} servings</span>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+}
