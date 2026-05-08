@@ -1,204 +1,187 @@
 # KAIZEN-PROPOSALS.md
 
-Generated: 2026-05-01
+**Sprint:** 1 | **Date:** 2026-05-08 | **Agent:** kaizen
 
 ---
 
-## Part 1 — Feature Proposals
+## Part 1 — Feature proposals
 
-### TASK-012: Fix duplicate data in recipes.json
-P0 | XS | IDEA | — | kaizen
-
-- [ ] AC: Run scripts/export.py to regenerate clean JSON without duplicates
-- [ ] Each ingredient should appear once per recipe
-- [ ] Each step should appear once per recipe
-- [ ] Verify recipes.json has valid structure
-
-DoD: recipes.json passes JSON validation | No duplicate entries
-
-**Evidence:** recipes.json lines 12-221 show each ingredient repeated 6x, same for steps
+### Observations from DONE.md
+- Sprint 1 completed 9 tasks with 0 iterations — clear specs, smooth execution
+- Core UI components (list, detail, search) implemented
+- No image URLs in any recipe — all recipes lack visual assets
+- Data quality issue: recipes.json has severe duplication (ingredients/steps repeated 6x per recipe)
+- Backlog already has TASK-010 (print-friendly) and TASK-011 (categories page)
 
 ---
 
-### TASK-013: Add recipe image support
-P1 | S | IDEA | — | kaizen
-
-- [ ] Add `image_url` field to Recipe model
-- [ ] Add placeholder images or use external food image APIs
-- [ ] Display images in RecipeListComponent cards
-- [ ] Display hero image in RecipeDetailComponent
-
-DoD: Images display in both list and detail views | ng build passes
-
-**Evidence:** TASK-005 mentions "image placeholder" but no implementation exists
-
----
-
-### TASK-014: Add recipe favoriting/bookmarking
+## TASK-010: Fix recipe data duplication in export script
 P1 | M | IDEA | — | kaizen
 
-- [ ] Add `isFavorite` field to Recipe model
-- [ ] Add heart icon to recipe cards and detail view
-- [ ] Store favorites in localStorage
-- [ ] Add /favorites route to view saved recipes
-
-DoD: Favorites persist across sessions | Can view all favorites
-
-**Evidence:** Common recipe app feature missing from current implementation
+- [ ] AC: Export script de-duplicates ingredients and steps before writing JSON
+- [ ] AC: Each ingredient appears once per recipe
+- [ ] AC: Each step appears once per recipe (step_number ensures order)
+DoD: `ng build` passes | python scripts/export.py produces clean JSON
 
 ---
 
-### TASK-015: Add recipe filtering by time/difficulty
+## TASK-011: Add image URLs to seed data
 P2 | S | IDEA | — | kaizen
 
-- [ ] Add time filter (Quick <15min, Medium 15-30, Long 30+)
-- [ ] Add difficulty field (derived from time and ingredient count)
-- [ ] Update SearchBarComponent with filter UI
-
-DoD: Time filters work correctly | Filter results match expected recipes
-
-**Evidence:** SearchBarComponent exists but only has category filter
+- [ ] AC: recipes.db schema includes image_url column
+- [ ] AC: Export script includes image_url in JSON output
+- [ ] AC: Recipe model includes imageUrl?: string
+- [ ] AC: RecipeDetailComponent displays image if present, placeholder if not
+DoD: `ng build` passes | images render in UI
 
 ---
 
-### TASK-016: Optimize bundle size with lazy loading
+## TASK-012: Add favorites functionality
+P2 | M | IDEA | — | kaizen
+
+- [ ] AC: Heart icon on recipe cards (toggle favorite)
+- [ ] AC: Favorites stored in localStorage
+- [ ] AC: /favorites route shows only favorited recipes
+- [ ] AC: Favorites persist across page reloads
+DoD: `ng build` passes | favorites persist
+
+---
+
+## TASK-013: Add recipe cooking timer
 P2 | S | IDEA | — | kaizen
 
-- [ ] Implement route-level lazy loading for RecipeDetail
-- [ ] Add budget warnings in angular.json
-- [ ] Optimize images with lazy loading
-
-DoD: Initial bundle < 200KB | Lazy routes load on demand
-
-**Evidence:** No lazy loading configured, all code in main bundle
+- [ ] AC: Timer component accepts minutes input
+- [ ] AC: Play/pause/reset controls
+- [ ] AC: Audio alert when timer completes
+- [ ] AC: Visible on RecipeDetailComponent
+DoD: `ng build` passes | timer counts down
 
 ---
 
-## Part 2 — Content Proposals (New Recipes for May)
+## TASK-014: Add pagination to recipe list
+P2 | M | IDEA | — | kaizen
 
-### SUGGESTED RECIPE 1
-Title: Spring Asparagus Risotto
-Category: dinner
-Time: 35
-Servings: 4
-Description: A creamy Italian risotto featuring fresh asparagus spears and parmesan, perfect for spring dinners. The bright green asparagus adds color and nutrition to this comforting dish.
-
-Ingredients:
-1 bunch asparagus
-300g arborio rice
-1L vegetable broth
-1 small onion
-3 cloves garlic
-100ml white wine
-50g parmesan cheese
-2 tbsp butter
-1 tbsp olive oil
-fresh thyme
-salt and pepper
-
-Steps:
-Trim asparagus and cut into 1-inch pieces, reserving tips.
-Sauté onion in butter until softened.
-Add rice and toast for 2 minutes.
-Pour in wine and stir until absorbed.
-Add broth one ladle at a time, stirring constantly.
-Add asparagus pieces halfway through cooking.
-Add reserved tips in the last 5 minutes.
-Stir in parmesan and season with salt, pepper, and thyme.
-Serve immediately.
+- [ ] AC: Display 12 recipes per page
+- [ ] AC: Previous/Next buttons
+- [ ] AC: Shows "Page X of Y" indicator
+- [ ] AC: Persists page number in URL query param
+DoD: `ng build` passes | pagination works
 
 ---
 
-### SUGGESTED RECIPE 2
+## Part 2 — Content proposals
+
+### Category analysis
+- **breakfast:** 1 recipe (Avocado Toast with Eggs)
+- **lunch:** 1 recipe (Greek Salad)
+- **dinner:** 1 recipe (Spaghetti Carbonara)
+- **dessert:** 1 recipe (Chocolate Chip Cookies)
+- **Missing:** snacks, beverages, soups, salads, vegetarian mains
+
+### Cuisine analysis
+- **Italian:** Carbonara
+- **Mediterranean:** Greek Salad
+- **American:** Chocolate Chip Cookies
+- **Missing:** Asian, Mexican, Indian, Middle Eastern
+
+### Seasonal (May)
+Spring produce: asparagus, peas, strawberries, rhubarb, artichokes
+
+---
+
+SUGGESTED RECIPE 1:
 Title: Strawberry Spinach Salad
 Category: lunch
-Time: 10
-Servings: 2
-Description: A refreshing spring salad combining sweet strawberries with peppery spinach, topped with pecans and balsamic glaze. Perfect for light summer lunches.
-
+Time: 15
+Servings: 4
+Description: A fresh spring salad with tender spinach, juicy strawberries, goat cheese, and a light balsamic vinaigrette perfect for May.
 Ingredients:
-200g fresh spinach
-150g strawberries
-50g pecans
-50g feta cheese
-2 tbsp balsamic vinegar
-2 tbsp olive oil
+200g baby spinach
+200g fresh strawberries
+100g goat cheese
+50g candied pecans
+30ml balsamic vinegar
+60ml olive oil
 1 tsp honey
-salt and pepper
-
+salt to taste
+black pepper to taste
 Steps:
-Wash and dry spinach leaves.
-Hull and slice strawberries.
-Toast pecans in a dry pan until fragrant.
-Whisk together olive oil, balsamic vinegar, and honey.
-Toss spinach and strawberries with dressing.
-Top with pecans and crumbled feta.
-Season with salt and pepper.
+Wash and dry spinach leaves thoroughly.
+Hull and slice strawberries into halves.
+Crumble goat cheese into small pieces.
+Whisk together balsamic vinegar, olive oil, honey, salt, and pepper.
+Toss spinach with dressing in a large bowl.
+Top with strawberries, goat cheese, and candied pecans.
 Serve immediately.
 
 ---
 
-### SUGGESTED RECIPE 3
-Title: May Memorial Day BBQ Ribs
+SUGGESTED RECIPE 2:
+Title: Teriyaki Chicken Stir-Fry
 Category: dinner
-Time: 180
-Servings: 6
-Description: Fall-off-the-bone tender BBQ ribs perfect for Memorial Day gatherings. Slow-cooked with a homemade spice rub and tangy BBQ sauce.
-
+Time: 25
+Servings: 4
+Description: A quick and flavorful Asian-inspired stir-fry with tender chicken, crisp vegetables, and a sweet savory teriyaki sauce.
 Ingredients:
-2 racks pork ribs
-2 tbsp brown sugar
-1 tbsp paprika
-1 tsp garlic powder
-1 tsp onion powder
-1 tsp cayenne pepper
-1 tsp salt
-1 tsp black pepper
-200ml BBQ sauce
-60ml apple cider vinegar
-
+500g chicken breast
+200g broccoli florets
+1 red bell pepper
+150g snap peas
+60ml soy sauce
+30ml mirin
+15ml sesame oil
+2 cloves garlic
+1 tsp ginger
+1 tbsp cornstarch
+2 tbsp vegetable oil
 Steps:
-Remove membrane from back of ribs.
-Mix all dry rub ingredients.
-Generously coat ribs with rub, wrap in plastic, refrigerate 2 hours.
-Preheat oven to 275°F (135°C).
-Place ribs on foil-lined baking sheet, cover tightly.
-Bake for 2.5 hours until tender.
-Brush with BBQ sauce.
-Grill or broil for 5 minutes to caramelize sauce.
-Rest 10 minutes before slicing.
-Serve with extra BBQ sauce.
+Slice chicken into thin strips and season with salt.
+Mix soy sauce, mirin, sesame oil, garlic, ginger, and cornstarch for sauce.
+Heat vegetable oil in a wok over high heat.
+Stir-fry chicken until golden, about 4 minutes. Remove and set aside.
+Add broccoli, bell pepper, and snap peas. Stir-fry 3 minutes.
+Return chicken to wok, add sauce, and toss until coated and thickened.
+Serve over steamed rice.
 
 ---
 
-## Part 3 — GUIDELINES Proposals
-
-### GUIDELINE-001: Maintain zero-iteration completion standard
-Status: IDEA
-
-All 9 tasks in Sprint 1 completed with 0 iterations. This demonstrates that well-scoped tasks with clear DoD criteria can be completed efficiently without rework.
-
-**Recommendation:** Continue sizing tasks to enable zero-iteration completions. Before marking a task READY, verify all DoD criteria are demonstrably met.
-
-**Evidence:** DONE.md shows all TASK-001 through TASK-009 have 0 iterations.
+SUGGESTED RECIPE 3:
+Title: Guacamole with Homemade Chips
+Category: snacks
+Time: 20
+Servings: 6
+Description: Fresh homemade guacamole with creamy avocado, lime, cilantro, and crispy tortilla chips — perfect for May gatherings.
+Ingredients:
+3 ripe avocados
+1 lime
+1/4 red onion
+2 Roma tomatoes
+1 jalapeño
+20g fresh cilantro
+1/2 tsp garlic
+salt to taste
+6 small flour tortillas
+vegetable oil for frying
+Steps:
+Cut avocados in half, remove pit, scoop into a bowl.
+Mash with a fork to desired consistency.
+Dice tomatoes, red onion, jalapeño, and chop cilantro.
+Add vegetables to avocado with lime juice, garlic, and salt.
+Mix well and taste for seasoning.
+Cut tortillas into triangle shapes.
+Heat oil to 350°F (175°C) and fry chips until golden, about 2 minutes.
+Drain on paper towels and serve with guacamole.
 
 ---
 
-### GUIDELINE-002: Fix data at source before building features
-Status: IDEA
+## Part 3 — Guidelines proposals
 
-recipes.json contains duplicate ingredients (6x per item) and duplicate steps (6x per step). This data quality issue should be fixed at the source (scripts/export.py) rather than building workarounds.
+### Guideline 1: Validate JSON output in export script
+**Evidence:** TASK-002 completed but recipes.json has data quality issues (duplicated entries). The export script should validate that each recipe's arrays have unique entries before writing.
 
-**Recommendation:** Before implementing new features, validate data quality. Fix export脚本 to prevent duplicates from being generated.
-
-**Evidence:** recipes.json shows each ingredient/step repeated multiple times, suggesting seed data or export script bug.
+### Guideline 2: Add image_url column to schema from the start
+**Evidence:** All 4 seed recipes lack image URLs. Future seed data tasks should include placeholder image URLs to avoid retrofitting the model later.
 
 ---
 
-## Summary
-
-- 5 feature proposals (TASK-012 through TASK-016)
-- 3 new recipe suggestions for May
-- 2 guidelines proposals
-
-Commit: chore: kaizen proposals sprint 1 2026-05-01
+*Human: Review and promote what you want to BACKLOG. Do NOT merge — this is a proposal only.*
