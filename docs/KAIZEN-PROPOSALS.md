@@ -1,187 +1,199 @@
 # KAIZEN-PROPOSALS.md
 
-**Sprint:** 1 | **Date:** 2026-05-08 | **Agent:** kaizen
+Generated: 2026-05-15
 
 ---
 
-## Part 1 — Feature proposals
+## Part 1 — Feature Proposals
 
-### Observations from DONE.md
-- Sprint 1 completed 9 tasks with 0 iterations — clear specs, smooth execution
-- Core UI components (list, detail, search) implemented
-- No image URLs in any recipe — all recipes lack visual assets
-- Data quality issue: recipes.json has severe duplication (ingredients/steps repeated 6x per recipe)
-- Backlog already has TASK-010 (print-friendly) and TASK-011 (categories page)
+Based on DONE.md patterns and current recipe collection analysis:
+
+### Observations from DONE.md (Sprint 1)
+- All 9 tasks completed: project init, data layer, models, services, components, routing, styling, deployment
+- Core MVP is functional
+- No search/filter features beyond basic text search
+- No user personalization features
+
+### Data Quality Issues Detected
+- **CRITICAL BUG**: recipes.json has severe duplication — each ingredient and step is repeated 6 times per recipe
+- Likely caused by export script bug in `scripts/export.py`
+- This bloats the JSON file significantly and may cause rendering issues
+
+### UI Feature Gaps
+- No category filtering on list page (only search)
+- No favorites/bookmarks functionality
+- No recipe images (all have image placeholder)
+- No lazy loading for recipes
 
 ---
 
-## TASK-010: Fix recipe data duplication in export script
+## TASK-012: Fix recipe data export bug (duplicate entries)
+P0 | S | IDEA | — | kaizen
+
+- [ ] AC: Run `python scripts/export.py` and verify no duplicate ingredients/steps
+- [ ] AC: recipes.json contains exactly 1 set of ingredients and steps per recipe
+
+DoD: export produces clean JSON | ng build passes
+
+---
+
+## TASK-013: Add category filter UI
 P1 | M | IDEA | — | kaizen
 
-- [ ] AC: Export script de-duplicates ingredients and steps before writing JSON
-- [ ] AC: Each ingredient appears once per recipe
-- [ ] AC: Each step appears once per recipe (step_number ensures order)
-DoD: `ng build` passes | python scripts/export.py produces clean JSON
+- [ ] AC: RecipeListComponent shows category filter buttons (Breakfast, Lunch, Dinner, Dessert)
+- [ ] AC: Clicking a category filters the recipe list
+- [ ] AC: "All" button resets filter
+
+DoD: ng build passes | category filter works
 
 ---
 
-## TASK-011: Add image URLs to seed data
-P2 | S | IDEA | — | kaizen
+## TASK-014: Add favorites functionality
+P1 | M | IDEA | — | kaizen
 
-- [ ] AC: recipes.db schema includes image_url column
-- [ ] AC: Export script includes image_url in JSON output
-- [ ] AC: Recipe model includes imageUrl?: string
-- [ ] AC: RecipeDetailComponent displays image if present, placeholder if not
-DoD: `ng build` passes | images render in UI
-
----
-
-## TASK-012: Add favorites functionality
-P2 | M | IDEA | — | kaizen
-
-- [ ] AC: Heart icon on recipe cards (toggle favorite)
-- [ ] AC: Favorites stored in localStorage
+- [ ] AC: Heart icon on each recipe card
+- [ ] AC: Clicking heart toggles favorite state (persisted in localStorage)
 - [ ] AC: /favorites route shows only favorited recipes
-- [ ] AC: Favorites persist across page reloads
-DoD: `ng build` passes | favorites persist
+
+DoD: ng build passes | favorites persist across sessions
 
 ---
 
-## TASK-013: Add recipe cooking timer
+## TASK-015: Add recipe images
+P2 | L | IDEA | — | kaizen
+
+- [ ] AC: Recipes have image field in JSON
+- [ ] AC: RecipeList shows thumbnail images
+- [ ] AC: RecipeDetail shows hero image
+
+DoD: ng build passes | images render correctly
+
+---
+
+## TASK-016: Implement lazy loading for recipe list
 P2 | S | IDEA | — | kaizen
 
-- [ ] AC: Timer component accepts minutes input
-- [ ] AC: Play/pause/reset controls
-- [ ] AC: Audio alert when timer completes
-- [ ] AC: Visible on RecipeDetailComponent
-DoD: `ng build` passes | timer counts down
+- [ ] AC: Initial load shows 10 recipes
+- [ ] AC: "Load More" button fetches next batch
+- [ ] AC: Smooth transition when loading more
+
+DoD: ng build passes | lazy loading works
 
 ---
 
-## TASK-014: Add pagination to recipe list
-P2 | M | IDEA | — | kaizen
+## Part 2 — Content Proposals (New Recipes)
 
-- [ ] AC: Display 12 recipes per page
-- [ ] AC: Previous/Next buttons
-- [ ] AC: Shows "Page X of Y" indicator
-- [ ] AC: Persists page number in URL query param
-DoD: `ng build` passes | pagination works
+### Recipe Collection Analysis
+- **Current categories**: breakfast (1), lunch (1), dinner (1), dessert (1) — very limited
+- **Cuisines represented**: Italian (Carbonara), American (cookies), Mediterranean (Greek salad) — mostly Western
+- **Missing cuisines**: Asian, Mexican, Indian, Japanese, Thai
+- **Current month**: May (late spring) — seasonal ingredients: asparagus, peas, strawberries, tomatoes
 
----
-
-## Part 2 — Content proposals
-
-### Category analysis
-- **breakfast:** 1 recipe (Avocado Toast with Eggs)
-- **lunch:** 1 recipe (Greek Salad)
-- **dinner:** 1 recipe (Spaghetti Carbonara)
-- **dessert:** 1 recipe (Chocolate Chip Cookies)
-- **Missing:** snacks, beverages, soups, salads, vegetarian mains
-
-### Cuisine analysis
-- **Italian:** Carbonara
-- **Mediterranean:** Greek Salad
-- **American:** Chocolate Chip Cookies
-- **Missing:** Asian, Mexican, Indian, Middle Eastern
-
-### Seasonal (May)
-Spring produce: asparagus, peas, strawberries, rhubarb, artichokes
+### Gaps Identified
+1. No Asian recipes
+2. No Mexican recipes
+3. No quick weeknight dinners (< 20 min)
+4. No vegetarian main dishes
+5. No spring seasonal recipes
 
 ---
 
-SUGGESTED RECIPE 1:
-Title: Strawberry Spinach Salad
-Category: lunch
-Time: 15
-Servings: 4
-Description: A fresh spring salad with tender spinach, juicy strawberries, goat cheese, and a light balsamic vinaigrette perfect for May.
-Ingredients:
-200g baby spinach
-200g fresh strawberries
-100g goat cheese
-50g candied pecans
-30ml balsamic vinegar
-60ml olive oil
-1 tsp honey
-salt to taste
-black pepper to taste
-Steps:
-Wash and dry spinach leaves thoroughly.
-Hull and slice strawberries into halves.
-Crumble goat cheese into small pieces.
-Whisk together balsamic vinegar, olive oil, honey, salt, and pepper.
-Toss spinach with dressing in a large bowl.
-Top with strawberries, goat cheese, and candied pecans.
-Serve immediately.
-
----
-
-SUGGESTED RECIPE 2:
-Title: Teriyaki Chicken Stir-Fry
+### SUGGESTED RECIPE 1
+Title: Sesame Noodles with Vegetables
 Category: dinner
-Time: 25
-Servings: 4
-Description: A quick and flavorful Asian-inspired stir-fry with tender chicken, crisp vegetables, and a sweet savory teriyaki sauce.
-Ingredients:
-500g chicken breast
-200g broccoli florets
-1 red bell pepper
-150g snap peas
-60ml soy sauce
-30ml mirin
-15ml sesame oil
-2 cloves garlic
-1 tsp ginger
-1 tbsp cornstarch
-2 tbsp vegetable oil
-Steps:
-Slice chicken into thin strips and season with salt.
-Mix soy sauce, mirin, sesame oil, garlic, ginger, and cornstarch for sauce.
-Heat vegetable oil in a wok over high heat.
-Stir-fry chicken until golden, about 4 minutes. Remove and set aside.
-Add broccoli, bell pepper, and snap peas. Stir-fry 3 minutes.
-Return chicken to wok, add sauce, and toss until coated and thickened.
-Serve over steamed rice.
-
----
-
-SUGGESTED RECIPE 3:
-Title: Guacamole with Homemade Chips
-Category: snacks
 Time: 20
-Servings: 6
-Description: Fresh homemade guacamole with creamy avocado, lime, cilantro, and crispy tortilla chips — perfect for May gatherings.
+Servings: 4
+Description: Quick sesame peanut noodles with crisp spring vegetables. Perfect for busy weeknights in late spring.
+
 Ingredients:
-3 ripe avocados
-1 lime
-1/4 red onion
-2 Roma tomatoes
-1 jalapeño
-20g fresh cilantro
-1/2 tsp garlic
-salt to taste
-6 small flour tortillas
-vegetable oil for frying
+200g wheat noodles
+2 tbsp sesame paste
+1 tbsp soy sauce
+1 tbsp rice vinegar
+1 tsp sugar
+2 tbsp vegetable oil
+1 cup shredded carrots
+1 cup edamame beans
+2 green onions, sliced
+1 tbsp sesame seeds
+
 Steps:
-Cut avocados in half, remove pit, scoop into a bowl.
-Mash with a fork to desired consistency.
-Dice tomatoes, red onion, jalapeño, and chop cilantro.
-Add vegetables to avocado with lime juice, garlic, and salt.
-Mix well and taste for seasoning.
-Cut tortillas into triangle shapes.
-Heat oil to 350°F (175°C) and fry chips until golden, about 2 minutes.
-Drain on paper towels and serve with guacamole.
+Cook noodles according to package directions, drain and rinse.
+Whisk sesame paste, soy sauce, rice vinegar, sugar, and 2 tbsp water.
+Heat oil in a wok over high heat.
+Stir-fry carrots and edamame for 2 minutes.
+Add noodles and sauce, toss for 3 minutes.
+Top with green onions and sesame seeds.
 
 ---
 
-## Part 3 — Guidelines proposals
+### SUGGESTED RECIPE 2
+Title: Spring Asparagus Risotto
+Category: dinner
+Time: 35
+Servings: 4
+Description: Creamy Italian risotto with fresh spring asparagus tips. A elegant spring dinner that's worth the stir.
 
-### Guideline 1: Validate JSON output in export script
-**Evidence:** TASK-002 completed but recipes.json has data quality issues (duplicated entries). The export script should validate that each recipe's arrays have unique entries before writing.
+Ingredients:
+300g arborio rice
+1 liter vegetable broth
+1 bunch asparagus, trimmed
+1 small onion, diced
+1/2 cup white wine
+3 tbsp butter
+1/2 cup parmesan, grated
+Salt and pepper to taste
 
-### Guideline 2: Add image_url column to schema from the start
-**Evidence:** All 4 seed recipes lack image URLs. Future seed data tasks should include placeholder image URLs to avoid retrofitting the model later.
+Steps:
+Bring broth to a simmer in a separate pot.
+Cut asparagus tips off, chop remaining stalks.
+Cook asparagus stalks in broth for 10 minutes, strain and keep broth.
+Sauté onion in 1 tbsp butter until soft.
+Add rice, toast for 2 minutes.
+Add wine, stir until absorbed.
+Add broth one ladle at a time, stirring constantly.
+After 15 minutes, add asparagus tips.
+When rice is tender, remove from heat.
+Stir in remaining butter and parmesan.
+Season and serve immediately.
 
 ---
 
-*Human: Review and promote what you want to BACKLOG. Do NOT merge — this is a proposal only.*
+### SUGGESTED RECIPE 3
+Title: Strawberry Margarita Mocktail
+Category: dessert
+Time: 10
+Servings: 2
+Description: Refreshing non-alcoholic strawberry lime drink perfect for spring gatherings. Sweet, tangy, and beautifully pink.
+
+Ingredients:
+1 cup fresh strawberries
+1/2 cup fresh lime juice
+2 tbsp honey
+1 cup sparkling water
+Ice
+Lime slices for garnish
+
+Steps:
+Blend strawberries with lime juice and honey until smooth.
+Strain through a fine mesh if desired.
+Fill glasses with ice.
+Divide strawberry mixture between glasses.
+Top with sparkling water.
+Garnish with lime slices and serve.
+
+---
+
+## Part 3 — Guidelines Proposals
+
+### Guideline 1: Fix data export to prevent duplication
+**Evidence**: recipes.json shows each ingredient and step repeated 6 times. This is clearly a bug in the export script that needs fixing before adding more recipes.
+
+**Proposal**: Add a validation step to export.py that verifies no duplicate entries, and add a test case in the DoD: "export produces JSON with no duplicate ingredients or steps"
+
+---
+
+### Guideline 2: Include iteration count in DONE.md
+**Evidence**: DONE.md shows all tasks with 0 iterations. This may be unrealistic for complex tasks.
+
+**Proposal**: Track actual iteration count (how many times a task was attempted) to better estimate sprint capacity. Add as a column in DONE.md table.
